@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
+import React, {Suspense} from "react";
+import loading from "@/components/Loading";
+import {ErrorBoundary} from "next/dist/client/components/error-boundary";
+import NavbarComponent from "../components/NavbarComponent";
+import Footer from "@/components/Footer";
+import Error from "@/app/error";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,7 +32,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+      <ErrorBoundary errorComponent={Error}>
+          <NavbarComponent/>
+          <Suspense fallback={loading()}>
+              {children}
+          </Suspense>
+          <Footer/>
+      </ErrorBoundary>
       </body>
     </html>
   );

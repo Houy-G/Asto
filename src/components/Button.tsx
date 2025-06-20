@@ -1,11 +1,11 @@
 'use client'
 import {Button as button} from "@/module/Button.module";
 import {useState} from "react";
+import Link from "next/link";
 
-export function Button ({name}: {name: string}) {
-    let [count, setCount] = useState(0);
+export function Button ({name,link}: {name: string, link: string}) {
     return  (
-        <button className={button} onClick={()=>setCount(count + 1)}>
-        {name}
+        <button className={button}>
+            <Link href={link}>{name}</Link>
          </button>);
 }
