@@ -7,7 +7,6 @@ import api from "@/lib/axios";
 import {useRouter, useSearchParams} from "next/navigation";
 
 
-
 export default function productPage () {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -34,7 +33,6 @@ export default function productPage () {
     return (
         <section className={"bg-gradient-to-r from-blue-300 to-gray-400 h-auto flex flex-col items-center py-20"}>
             <div className={"w-auto mx-auto bg-blue-500 p-2"}>
-
                 <input
                     className={"focus:outline-none  "}
                     type='text'

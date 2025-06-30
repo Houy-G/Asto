@@ -7,7 +7,7 @@ export default async function Home() {
           <section id="hero" className="py-40 space-y-20">
               <div>
                     <h2 className="text-6xl">
-                  Welcome to Asto Shop
+                  Welcome to Astro Shop
                     </h2>
               </div>
               <Button name={"Let Buy"} link={"/product"} button={defaults}/>
