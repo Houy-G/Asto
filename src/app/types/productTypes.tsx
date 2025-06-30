@@ -1,5 +1,6 @@
-export type product = {
-    id: number;
+export type Product = {
+    id: string;
+    uuid: string;
     tittle: string;
     price: number;
     description: string;
