@@ -1,9 +1,7 @@
 'use client'
-import {Button as button} from "@/module/Button.module";
-import {useState} from "react";
 import Link from "next/link";
 
-export function Button ({name,link}: {name: string, link: string}) {
+export function Button ({name,link,button}: {name: string, link: string, button:string}) {
     return  (
         <button className={button}>
             <Link href={link}>{name}</Link>
