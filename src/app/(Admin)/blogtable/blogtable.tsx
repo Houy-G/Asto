@@ -36,7 +36,7 @@ interface DataTableProps<TData, TValue> {
 
 
 
-export default function BlogTable<TData, TValue>({
+export default function Blogtable<TData, TValue>({
                                                      columns,
                                                      data,
                                                  }: DataTableProps<TData, TValue>)

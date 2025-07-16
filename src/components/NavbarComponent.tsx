@@ -9,7 +9,7 @@ import {usePathname} from "next/navigation";
 
 export default function NavbarComponent() {
     const pathname = usePathname();
-    if (pathname === '/dashboard' || pathname === '/BlogTable') {
+    if (pathname === '/dashboard' || pathname === '/blogtable' || pathname === '/register' || pathname === '/login') {
         return null;
     }
     return (

@@ -31,7 +31,7 @@ export default function page() {
                 router.push('/product'); // ✅ Protected route
             }
         } catch (err: any) {
-            setError(err.response?.data?.message || 'SignUp failed');
+            setError(err.response?.data?.message || 'signUp failed');
         }
     };
 

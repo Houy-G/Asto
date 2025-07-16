@@ -1,6 +1,6 @@
 import React from 'react'
 import {BlogType, columns} from './columns'
-import BlogTable from "@/app/(Admin)/BlogTable/BlogTable";
+import Blogtable from "@/app/(Admin)/blogtable/blogtable";
 
 async function getData():Promise<BlogType[]> {
     const res = await fetch(`https://dummyjson.com/posts`)
@@ -16,7 +16,7 @@ export default async function page() {
     return (
         <section className='w-[95%] mx-auto mt-5'>
             <h1 className='text-2xl font-bold mb-5'>Blog Dashboard</h1>
-            <BlogTable
+            <Blogtable
                 columns={columns} data={data}
             />
         </section>
