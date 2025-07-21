@@ -1,68 +1,94 @@
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import {CartItems, ProductType} from "@/app/types/productTypes";
+export interface CartItem {
+    id: string
+    name: string
+    price: number
+    quantity: number
+    image?: string
+    stock?: number
+}
 
-type CartState = {
-    items: CartItems[]
-    total: number
+interface CartState {
+    items: CartItem[]
     itemsCount: number
+    subtotal: number
 }
 
 const initialState: CartState = {
-    items: [],
-    total: 0,
-    itemsCount: 0,
+    items: [
+        {
+            id: "1",
+            name: "9318LamTanBlack & Brown Slipper",
+            price: 19,
+            quantity: 1,
+            image: "/placeholder.svg?height=60&width=60&text=Slipper",
+            stock: 10,
+        },
+        {
+            id: "2",
+            name: "Adidas shoes",
+            price: 486,
+            quantity: 1,
+            image: "/placeholder.svg?height=60&width=60&text=Adidas",
+            stock: 5,
+        },
+    ],
+    itemsCount: 2,
+    subtotal: 505,
 }
+
 const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        addToCart: (state, action: PayloadAction<ProductType>) => {
-            const product = action.payload
-            const existingItem = state.items.find((item) => item.id === product.id)
+        addToCart: (state, action: PayloadAction<Omit<CartItem, "quantity"> & { quantity?: number }>) => {
+            const newItem = { ...action.payload, quantity: action.payload.quantity || 1 }
+            const existingItem = state.items.find((item) => item.id === newItem.id)
 
             if (existingItem) {
-                existingItem.quantity += 1 // quantity = quantity +1
+                const maxQuantity = newItem.stock || 999
+                existingItem.quantity = Math.min(existingItem.quantity + newItem.quantity, maxQuantity)
             } else {
-                state.items.push({
-                    id: product.id,
-                    title: product.title,
-                    price: product.price,
-                    thumbnail: product.thumbnail || "/placeholder.svg",
-                    description: product.description,
-                    category: product.category,
-                    quantity: 1,
-                })
+                state.items.push(newItem)
             }
-            cartSlice.caseReducers.calculateTotals(state)
+
+            // Recalculate totals
+            state.itemsCount = state.items.reduce((total, item) => total + item.quantity, 0)
+            state.subtotal = state.items.reduce((total, item) => total + item.price * item.quantity, 0)
         },
-        removeFromCart: (state, action: PayloadAction<number>) => {
-            state.items = state.items.filter((item) => item.id !== action.payload)
-            cartSlice.caseReducers.calculateTotals(state)
-        },
-        updateQuantity: (state, action: PayloadAction<{ id: number; quantity: number }>) => {
+        updateQuantity: (state, action: PayloadAction<{ id: string; quantity: number }>) => {
             const { id, quantity } = action.payload
             const item = state.items.find((item) => item.id === id)
 
             if (item) {
-                item.quantity = Math.max(0, quantity)
-                if (item.quantity === 0) {
+                if (quantity <= 0) {
                     state.items = state.items.filter((item) => item.id !== id)
+                } else {
+                    const maxQuantity = item.stock || 999
+                    item.quantity = Math.min(quantity, maxQuantity)
                 }
+
+                // Recalculate totals
+                state.itemsCount = state.items.reduce((total, item) => total + item.quantity, 0)
+                state.subtotal = state.items.reduce((total, item) => total + item.price * item.quantity, 0)
             }
-            cartSlice.caseReducers.calculateTotals(state)
+        },
+        removeItem: (state, action: PayloadAction<string>) => {
+            const id = action.payload
+            state.items = state.items.filter((item) => item.id !== id)
+
+            // Recalculate totals
+            state.itemsCount = state.items.reduce((total, item) => total + item.quantity, 0)
+            state.subtotal = state.items.reduce((total, item) => total + item.price * item.quantity, 0)
         },
         clearCart: (state) => {
             state.items = []
-            state.total = 0
             state.itemsCount = 0
-        },
-        calculateTotals: (state) => {
-            state.itemsCount = state.items.reduce((total, item) => total + item.quantity, 0)
-            state.total = state.items.reduce((total, item) => total + item.price * item.quantity, 0)
+            state.subtotal = 0
         },
     },
 })
 
-export const { addToCart, removeFromCart, updateQuantity, clearCart } = cartSlice.actions
+export const { addToCart, updateQuantity, removeItem, clearCart } = cartSlice.actions
 export default cartSlice.reducer
