@@ -1,41 +1,119 @@
 'use client';
-import Link from "next/link";
-import Image from "next/image";
-import {navItems} from "@/app/data/rountPage";
-import {Button} from "@/components/Button";
-import {defaults} from "@/module/Button.module";
-import {ModeToggle} from "@/components/modeToggle";
-import {usePathname} from "next/navigation";
 
-export default function NavbarComponent() {
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { ShoppingCart } from "lucide-react";
+import { useAppSelector } from "@/lib/hooks";
+import {navLink} from "@/components/menu";
+import {Button} from "@/components/ui/button";
+import {Badge} from "@/components/ui/badge";
+
+export function NavbarComponent() {
     const pathname = usePathname();
-    if (pathname === '/dashboard' || pathname === '/BlogTable') {
-        return null;
-    }
+    const {itemsCount} = useAppSelector((state) => state.cart) // Total items in cart
+    useEffect(() => {
+        const toggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (toggle && mobileMenu) {
+            const handleClick = () => {
+                mobileMenu.classList.toggle('hidden');
+            };
+            toggle.addEventListener('click', handleClick);
+
+            // Cleanup event listener on unmount
+            return () => {
+                toggle.removeEventListener('click', handleClick);
+            };
+        }
+    }, []);
     return (
-            <nav className="fixed w-full bg-opacity-30 backdrop-blur-md py-4 z-20 text-white">
-                <div className={"flex items-center px-4 justify-between w-auto align-middle"}>
-                    <Link href={"/"} className={"flex items-center px-4 space-x-4"}>
-                        <Image src={"/img.png"} alt={"logo"} width={30} height={30}/>
-                    <h3 className={"text-2xl "}>Astro Shop</h3>
-                    </Link>
-                <ul className="md:flex items-center space-x-4 h-10 hidden">
-                    {
-                     navItems.map((item,i) => (
-                         <li key={item.id}>
-                         <Link href={item.path}  className={"text-white hover:text-gray-200"}>{item.name}</Link>
-                         </li>
-                     ))
-                    }
-                </ul>
-                    <div className={"md:flex items-center space-x-4 h-10 hidden"}>
-                    <ModeToggle/>
-                    <div className={"space-x-2 items-center "}>
-                        <Button name={"login"} link={"/login"} button={defaults}/>
-                        <Button name={"log out"} link={"/logout"} button={defaults}/>
+        <nav className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 shadow-lg">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between h-16 items-center">
+                    {/* <!-- Logo --> */}
+                    <div className="flex-shrink-0 text-white text-2xl font-bold">
+                        MyBrand
                     </div>
+
+                    {/* <!-- Desktop Menu --> */}
+                    <div className="hidden md:flex space-x-6 text-white font-medium">
+                        {
+                            navLink.map((item, index) => (
+                                <Link
+                                    key={index}
+                                    href={item.path}
+                                    className={`${pathname === item.path ? 'text-amber-300' : ''}hover:text-yellow-300 transition`}>
+                                    {item.name}
+                                </Link>
+                            ))
+                        }
+                    </div>
+
+                    {/* <!-- Desktop Button --> */}
+                    <div className="hidden md:block">
+                        <Link href="#"
+                              className="bg-white text-indigo-700 px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold">
+                            Get Started
+                        </Link>
+                        {/* Cart Button with Badge */}
+                        <Link href="/cart">
+                            <Button variant="ghost" size="icon" className="relative">
+                                <ShoppingCart className="h-5 w-5"/>
+                                {/* Show badge only if there are items in cart */}
+                                {itemsCount > 0 && (
+                                    <Badge
+                                        className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                                    >
+                                        {itemsCount}
+                                    </Badge>
+                                )}
+                            </Button>
+                        </Link>
+                    </div>
+
+                    {/* <!-- Mobile Menu Button --> */}
+                    <div className="md:hidden">
+                        <button id="menu-toggle" className="text-white focus:outline-none text-2xl">
+                            ☰
+                        </button>
                     </div>
                 </div>
-            </nav>
-    );
+            </div>
+
+            {/* <!-- Mobile Menu --> */}
+            <div id="mobile-menu" className="md:hidden hidden px-4 pb-4 space-y-2 text-white font-medium">
+                {
+                    navLink.map((item, index) => (
+                        <Link
+                            key={index}
+                            href={item.path}
+                            className={`${pathname === item.path ? 'text-black' : ''}hover:text-yellow-300 transition`}>
+                            {item.name}
+                        </Link>
+                    ))
+                }
+
+                <Link href="#"
+                      className="block bg-white text-indigo-700 text-center px-4 py-2 rounded-xl hover:bg-yellow-300 transition-all font-semibold mt-2">
+                    Get Started
+                </Link>
+                {/* Cart Button with Badge */}
+                <Link href="/cart">
+                    <Button variant="ghost" size="icon" className="relative">
+                        <ShoppingCart className="h-5 w-5"/>
+                        {/* Show badge only if there are items in cart */}
+                        {itemsCount > 0 && (
+                            <Badge
+                                className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs text-orange-400"
+                            >
+                                {itemsCount}
+                            </Badge>
+                        )}
+                    </Button>
+                </Link>
+            </div>
+        </nav>
+    )
 }

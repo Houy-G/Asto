@@ -1,9 +1,9 @@
-'use client'
-import Link from "next/link";
-
-export function Button ({name,link,button}: {name: string, link: string, button:string}) {
-    return  (
-        <button className={button}>
-            <Link href={link}>{name}</Link>
-         </button>);
+import React from 'react'
+import styles from '../module/Button.module.css'
+export default function Button() {
+    return (
+        <button className={styles.background}>
+            Login
+        </button>
+    )
 }

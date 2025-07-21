@@ -1,5 +1,3 @@
-import {Button} from "@/components/Button";
-import {defaults} from "@/module/Button.module";
 export default async function Home() {
     await new Promise(resolve => setTimeout(resolve, 5000));
     return (
@@ -10,7 +8,6 @@ export default async function Home() {
                   Welcome to Astro Shop
                     </h2>
               </div>
-              <Button name={"Let Buy"} link={"/product"} button={defaults}/>
           </section>
       </header>
   );
